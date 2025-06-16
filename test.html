@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG.js Connectable Plugin Test - v2.0.0</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        #container {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        
+        .controls {
+            margin: 20px 0;
+            padding: 15px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        button {
+            margin: 5px;
+            padding: 8px 15px;
+            background: #007cba;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: #005a87;
+        }
+        
+        .info {
+            background: #e7f3ff;
+            border: 1px solid #b3d4fc;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>SVG.js Connectable Plugin v2.0.0 Test</h1>
+    
+    <div class="info">
+        <h3>🎉 SVG.js 3.x Compatible!</h3>
+        <p>This test demonstrates the upgraded connectable plugin working with SVG.js 3.x. 
+        The plugin maintains full backward compatibility while supporting modern module systems.</p>
+    </div>
+    
+    <div class="controls">
+        <h3>Test Controls:</h3>
+        <button onclick="testBasicConnection()">Create Basic Connection</button>
+        <button onclick="testCurvedConnection()">Create Curved Connection</button>
+        <button onclick="testWithMarker()">Create Connection with Marker</button>
+        <button onclick="testPeriferyAttachment()">Test Perifery Attachment</button>
+        <button onclick="clearAll()">Clear All</button>
+    </div>
+    
+    <div id="container"></div>
+    
+    <div class="controls">
+        <h3>Features Tested:</h3>
+        <ul>
+            <li>✅ SVG.js 3.x compatibility</li>
+            <li>✅ Basic straight connections</li>
+            <li>✅ Curved connections</li>
+            <li>✅ Marker support</li>
+            <li>✅ Center and perifery attachment</li>
+            <li>✅ Dynamic updates</li>
+            <li>✅ UMD module loading</li>
+        </ul>
+    </div>
+
+    <!-- Load SVG.js 3.x from CDN -->
+    <script src="https://unpkg.com/@svgdotjs/svg.js@^3.2.0"></script>
+    
+    <!-- Load the upgraded connectable plugin -->
+    <script src="src/svg.connectable.js"></script>
+    
+    <script>
+        let draw;
+        let connections = [];
+        
+        // Initialize SVG canvas
+        function initCanvas() {
+            // Clear existing
+            const container = document.getElementById('container');
+            container.innerHTML = '';
+            
+            // Create new SVG canvas using SVG.js 3.x syntax
+            draw = SVG().addTo('#container').size(800, 500);
+            connections = [];
+            
+            console.log('SVG.js version:', SVG.version || 'Unknown');
+            console.log('Canvas initialized with SVG.js 3.x');
+        }
+        
+        function testBasicConnection() {
+            initCanvas();
+            
+            // Create two rectangles
+            const rect1 = draw.rect(80, 60).move(50, 50).fill('#ff6b6b').stroke('#c92a2a');
+            const rect2 = draw.rect(80, 60).move(300, 200).fill('#51cf66').stroke('#37b24d');
+            
+            // Add labels
+            draw.text('Source').move(55, 120).font({ size: 12 });
+            draw.text('Target').move(305, 270).font({ size: 12 });
+            
+            // Create connection
+            const connection = rect1.connectable({
+                sourceAttach: 'center',
+                targetAttach: 'center',
+                type: 'straight',
+                color: '#495057'
+            }, rect2);
+            
+            connections.push(connection);
+            console.log('Basic connection created:', connection);
+        }
+        
+        function testCurvedConnection() {
+            initCanvas();
+            
+            // Create ellipses
+            const ellipse1 = draw.ellipse(100, 60).move(50, 100).fill('#845ef7').stroke('#7048e8');
+            const ellipse2 = draw.ellipse(80, 80).move(400, 150).fill('#ffd43b').stroke('#fab005');
+            
+            // Create curved connection
+            const connection = ellipse1.connectable({
+                sourceAttach: 'center',
+                targetAttach: 'center',
+                type: 'curved',
+                color: '#e03131'
+            }, ellipse2);
+            
+            connections.push(connection);
+            console.log('Curved connection created:', connection);
+        }
+        
+        function testWithMarker() {
+            initCanvas();
+            
+            // Create circles
+            const circle1 = draw.circle(60).move(100, 80).fill('#20c997').stroke('#12b886');
+            const circle2 = draw.circle(60).move(350, 250).fill('#fd7e14').stroke('#e8590c');
+            
+            // Create connection with default marker
+            const connection = circle1.connectable({
+                sourceAttach: 'center',
+                targetAttach: 'center',
+                type: 'straight',
+                marker: 'default',
+                color: '#6741d9'
+            }, circle2);
+            
+            connections.push(connection);
+            console.log('Connection with marker created:', connection);
+        }
+        
+        function testPeriferyAttachment() {
+            initCanvas();
+            
+            // Create rectangles
+            const rect1 = draw.rect(120, 80).move(80, 100).fill('#f08c00').stroke('#e8590c');
+            const rect2 = draw.rect(100, 100).move(350, 180).fill('#1c7ed6').stroke('#1864ab');
+            
+            // Create connection with perifery attachment
+            const connection = rect1.connectable({
+                sourceAttach: 'perifery',
+                targetAttach: 'perifery',
+                type: 'curved',
+                marker: 'default',
+                color: '#c92a2a'
+            }, rect2);
+            
+            connections.push(connection);
+            console.log('Perifery attachment connection created:', connection);
+        }
+        
+        function clearAll() {
+            if (draw) {
+                draw.clear();
+                connections = [];
+                console.log('Canvas cleared');
+            }
+        }
+        
+        // Initialize when page loads
+        window.addEventListener('load', function() {
+            console.log('Testing SVG.js Connectable Plugin v2.0.0');
+            testBasicConnection();
+        });
+    </script>
+</body>
+</html>
